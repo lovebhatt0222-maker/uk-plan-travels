@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const fs = require('fs');
 const path = require('path');
 const nodemailer = require('nodemailer');
+const axios = require('axios'); // Secure HTTP pipeline link library
 
 const app = express();
 app.use(cors());
@@ -22,13 +23,14 @@ function readOrders() {
 }
 
 // =========================================================================
-// 🚨 CHANGE THESE TWO LINES BELOW WITH YOUR ACTUAL GMAIL AND APP PASSWORD 🚨
+// 🚨 DETAILS 1: GMAIL AUTO-NOTIFICATION ALERT ENGINE SETTINGS 🚨
 // =========================================================================
 const corporateEmailNotificationTransporterModule = nodemailer.createTransport({
     service: 'gmail',
     auth: {
-        user: 'lovebhatt0222@gmail.com', // <-- Isko mita kar apni Gmail ID likhein
-        pass: 'ttau nncj cryk vlqw'      // <-- Isko mita kar apna 16-digit Google App Password likhein
+        user: 'lovebhatt0222@gmail.com', // <-- Apni Gmail ID quotes ke andar likhein
+        pass: 'ttau nncj cryk vlqw
+'      // <-- Apna 16-digit Google App Password likhein
     }
 });
 // =========================================================================
@@ -37,7 +39,7 @@ const corporateEmailNotificationTransporterModule = nodemailer.createTransport({
 function dispatchSystemAlertToGmail(subjectLine, textualContentBody) {
     const routingConfigurationLogOptions = {
         from: '"UK Masterplan System Engine" <YOUR_BUSINESS_GMAIL@gmail.com>',
-        to: 'YOUR_BUSINESS_GMAIL@gmail.com', // <-- Yahan bhi apni asli Gmail ID likh dena
+        to: 'lovebhatt0222L@gmail.com', // <-- Apni real Gmail ID likhein yahan bhi
         subject: subjectLine,
         text: textualContentBody
     };
@@ -59,7 +61,9 @@ app.get('/api/admin/orders', (req, res) => {
     try { res.json(readOrders()); } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// API ENDPOINT ROUTE: Generate & Route Real Text SMS OTP via Cellular Grid
+// =========================================================================
+// 🚨 DETAILS 2: CELLULAR TEXT SMS OTP ROUTER WITH REAL FAST2SMS API 🚨
+// =========================================================================
 app.post('/api/auth/request-otp', async (req, res) => {
     try {
         const { type, phone, name, email } = req.body;
@@ -78,6 +82,16 @@ app.post('/api/auth/request-otp', async (req, res) => {
         };
 
         console.log(`\n[SECURITY LEDGER] -> Generated OTP for ${phone}: (${generatedSecureCipherKey})`);
+
+        // Real Live Mobile Text SMS Gateway Trigger Engine
+        await axios.post('https://fast2sms.com', {
+            route: 'otp',
+            variables_values: generatedSecureCipherKey,
+            numbers: phone.replace(/[^0-9]/g, '') 
+        }, { 
+            headers: { 'authorization': 'YOsXSBvUquQnZYlgmrH0VAL3EMkFD7cybOxR1zGT2f4KdWItN5J82HbDvTEeq7hxnF1BZroRN8uKXY6CJS' } // <-- Apni Copy ki hui API Key yahan paste karein
+        });
+
         res.status(200).json({ success: true, message: "Security cipher dispatched to global gateway network tunnel successfully!" });
     } catch (error) {
         console.error("⚠️ SMS Grid Gateway Fault Trace:", error.message);
