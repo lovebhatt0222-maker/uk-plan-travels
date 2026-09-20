@@ -260,7 +260,6 @@
         }
     }
     
-    // --- MATHEMATICAL DYNAMIC PRICING AND GST ENGINE ---
     function calculateCost() {
         if (activeMode === 'travel') {
             const budget = document.getElementById("budgetFilter").value;
@@ -312,34 +311,75 @@
             };
         }
     }
-
-    // --- FRONTEND AUTHENTICATION TUNNEL LOGIC WIREFRAMES ---
+    // --- FRONTEND AUTHENTICATION TUNNEL LOGIC NETWORKS ---
     function triggerOtpRequest(type) {
         const phoneInputId = (type === 'signup') ? "regPhone" : "loginPhone";
         const targetPhone = document.getElementById(phoneInputId).value;
+        const targetName = (type === 'signup') ? document.getElementById("regName").value : "";
+        const targetEmail = (type === 'signup') ? document.getElementById("regEmail").value : "";
         
         if(!targetPhone || targetPhone.trim().length < 10) {
-            alert("Please enter a valid active mobile phone number to route text SMS OTP tokens!");
+            alert("Security Error: Please enter a valid 10-digit mobile phone number to route text SMS OTP tokens!");
             return;
         }
 
-        // Mock UI panel dynamic transitional update values parameters
-        document.getElementById("registerPanelBlock").style.display = "none";
-        document.getElementById("loginPanelBlock").style.display = "none";
-        document.getElementById("otpVerificationPanelBlock").style.display = "block";
-        document.getElementById("otpStatusTargetLabel").innerText = `Enter 4-digit security cipher sent via text SMS link to: ${targetPhone}`;
+        const requestPayload = { type, phone: targetPhone, name: targetName, email: targetEmail };
+
+        // Real Network Request to Backend Gateway Node
+        fetch('/api/auth/request-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(requestPayload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                document.getElementById("registerPanelBlock").style.display = "none";
+                document.getElementById("loginPanelBlock").style.display = "none";
+                document.getElementById("otpVerificationPanelBlock").style.display = "block";
+                document.getElementById("otpStatusTargetLabel").innerText = `Enter 4-digit security cipher sent via text SMS link to: ${targetPhone}`;
+                // Cache user's phone identity in a hidden attribute framework lock
+                document.getElementById("securityCipherInput").setAttribute("data-active-phone", targetPhone);
+            } else {
+                alert("Gateway Fault: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Connection Pipeline Blocked. Check your server networks!");
+        });
     }
 
     function processOtpVerification() {
         const enteredOtp = document.getElementById("securityCipherInput").value;
+        const attachedPhone = document.getElementById("securityCipherInput").getAttribute("data-active-phone");
+
         if(!enteredOtp || enteredOtp.trim().length !== 4) {
-            alert("Security Error: Invalid parameter metrics. Please input a complete 4-digit SMS verification code cipher!");
+            alert("Security Error: Please input a complete 4-digit SMS verification code cipher!");
             return;
         }
 
-        // Unlock layout persistence layers overlay framework status
-        document.getElementById("authGatewayBlock").style.display = "none";
-        alert("✓ Authentication Gateway Cleared! Secure operational dashboard sessions successfully loaded.");
+        const verificationPayload = { phone: attachedPhone, otp: enteredOtp };
+
+        fetch('/api/auth/verify-otp', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(verificationPayload)
+        })
+        .then(res => res.json())
+        .then(data => {
+            if(data.success) {
+                // Unlock layout persistence layers overlay framework status
+                document.getElementById("authGatewayBlock").style.display = "none";
+                alert("✓ Authentication Gateway Cleared! Secure operational dashboard sessions successfully loaded.");
+            } else {
+                alert("Verification Failed: " + data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            alert("Verification Pipeline Mismatch error!");
+        });
     }
 
     function submitInvoice() {
@@ -366,15 +406,7 @@
             document.getElementById("lProdGst").innerText = `₹${invoiceData.productsGst}`;
             manifest.innerHTML = `<div><strong>Buyer Identity:</strong> ${invoiceData.name}<br><strong>Contact Phone:</strong> ${invoiceData.phone}<br><strong>Shipping Point:</strong> ${invoiceData.address}</div>`;
         }
-        fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(invoiceData) })
-        .then(res => res.json()).then(data => alert("✓ Invoice logged successfully into backend!"))
-        .catch(err => console.error(err));
-    }
-
-    function downloadInvoiceText() {
-        if(!invoiceData) return;
-        let cRows = "", sRows = "";
-        if (invoiceData.type.includes("Travel")) {
+        
         fetch('/api/bookings', { 
             method: 'POST', 
             headers: { 'Content-Type': 'application/json' }, 
