@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chalo Uttarakhand - Premium Travel Centre</title>
+    <link rel="stylesheet" href="https://cloudflare.com"/>
+    <style>
+        :root { --primary: #0f172a; --secondary: #059669; --white: #ffffff; --dark: #1e293b; --accent: #3b82f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
+        body { background: #f1f5f9; color: var(--dark); padding: 20px; min-height: 100vh; position: relative; }
+        
+        /* PREMIUM BACKGROUND LAYER AUTH LOCK SCREEN POPUP BOARDS OVERLAY */
+        .auth-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(15, 23, 42, 0.85); backdrop-filter: blur(8px); z-index: 9999; display: flex; justify-content: center; align-items: center; transition: all 0.3s ease; }
+        .auth-card { background: var(--white); width: 100%; max-width: 450px; padding: 40px; border-radius: 24px; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); text-align: center; border: 1px solid #e2e8f0; }
+        .auth-title { font-size: 1.6rem; font-weight: 800; color: var(--primary); margin-bottom: 8px; letter-spacing: -0.02em; }
+        .auth-subtitle { font-size: 0.9rem; color: #64748b; margin-bottom: 25px; font-weight: 500; }
+        .auth-toggle-link { font-size: 0.85rem; color: var(--accent); cursor: pointer; font-weight: 700; margin-top: 15px; display: inline-block; text-decoration: underline; }
+        
+        .container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
+        @media (max-width: 900px) { .container { grid-template-columns: 1fr; } }
+        header { grid-column: 1 / -1; background: linear-gradient(135deg, var(--primary), #1e293b); color: white; padding: 30px; text-align: center; border-radius: 20px; display: flex; flex-direction: column; align-items: center; gap: 15px; }
+        .phone-btn-center { background: #16a34a; color: white; padding: 14px 30px; border-radius: 50px; text-decoration: none; font-weight: 800; font-size: 1.1rem; }
+        .nav-tabs { display: flex; justify-content: center; gap: 15px; }
+        .tab-btn { background: rgba(255, 255, 255, 0.1); color: #94a3b8; border: none; padding: 10px 24px; font-weight: 700; border-radius: 30px; cursor: pointer; }
+        .tab-btn.active { background: var(--secondary); color: white; }
+        .card { background: var(--white); padding: 30px; border-radius: 20px; border: 1px solid #e2e8f0; box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+        .page-section { display: none; } .page-section.active { display: block; }
+        .section-title { font-size: 1.3rem; font-weight: 700; color: var(--primary); margin-bottom: 20px; border-bottom: 2px solid #f1f5f9; padding-bottom: 8px; }
+        .form-group { margin-bottom: 15px; text-align: left; }
+        .step-block { background: #f8fafc; border: 1px solid #e2e8f0; padding: 20px; border-radius: 14px; margin-bottom: 15px; }
+        .step-badge { background: var(--primary); color: white; padding: 3px 8px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; margin-right: 5px; }
+        label { display: block; font-weight: 700; margin-bottom: 6px; font-size: 0.8rem; text-transform: uppercase; color: #475569; }
+        input, select, textarea { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 0.95rem; outline: none; background: #fff; }
+        .p-row { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; background: #fff; padding: 12px; border-radius: 10px; margin-top: 10px; border-left: 4px solid var(--secondary); border-top: 1px solid #e2e8f0; }
+        .checkbox-group { display: flex; align-items: center; gap: 10px; background: rgba(5, 150, 105, 0.06); padding: 12px; border-radius: 10px; margin-top: 15px; }
+        .invoice-box { background: #fafafa; border: 1px solid #e2e8f0; padding: 25px; border-radius: 16px; margin-top: 15px; display: none; }
+        .invoice-row { display: flex; justify-content: space-between; margin-bottom: 10px; font-size: 0.9rem; color: #475569; }
+        .passenger-list-receipt { font-size: 0.85rem; background: white; padding: 10px; border-radius: 8px; margin: 10px 0; border: 1px solid #e2e8f0; }
+        .invoice-total { display: flex; justify-content: space-between; font-weight: 800; font-size: 1.3rem; border-top: 2px solid var(--primary); padding-top: 12px; margin-top: 15px; }
+        .auth-btn { background: linear-gradient(135deg, var(--accent), #2563eb); color: white; border: none; padding: 14px; font-weight: 700; border-radius: 10px; cursor: pointer; width: 100%; margin-top: 10px; }
+        .live-price { font-size: 1.4rem; font-weight: 800; color: var(--secondary); text-align: right; margin-top: 15px; }
+    </style>
+</head>
+<body>
+
+<!-- SECURE AUTH GATEWAY OVERLAY POPUP LAYER -->
+<div class="auth-overlay" id="authGatewayBlock">
+    <!-- REGA: NEW ACCOUNT SIGN-UP SCREEN -->
+    <div class="auth-card" id="registerPanelBlock">
+        <div class="auth-title">Create Account</div>
+        <div class="auth-subtitle">Verify identity profile to unlock booking framework slots</div>
+        <div class="form-group">
+            <label>Full Business Name</label>
+            <input type="text" id="regName" placeholder="Enter full name">
+        </div>
+        <div class="form-group">
+            <label>Secure Gmail Account (For System Login Notifications)</label>
+            <input type="email" id="regEmail" placeholder="username@gmail.com">
+        </div>
+        <div class="form-group">
+            <label>Active Mobile Phone (For Real SMS OTP)</label>
+            <input type="text" id="regPhone" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <button type="button" class="auth-btn" onclick="triggerOtpRequest('signup')">🚀 Send Phone Verification OTP</button>
+        <span class="auth-toggle-link" onclick="toggleAuthPanels('login')">Already have an account? Sign In here</span>
+    </div>
+    <!-- REGB: EXISTING ACCOUNT SIGN-IN SCREEN -->
+    <div class="auth-card" id="loginPanelBlock" style="display: none;">
+        <div class="auth-title">Welcome Back</div>
+        <div class="auth-subtitle">Enter registered credentials parameter to continue operations</div>
+        <div class="form-group">
+            <label>Registered Phone Number</label>
+            <input type="text" id="loginPhone" placeholder="+91 XXXXX XXXXX">
+        </div>
+        <button type="button" class="auth-btn" onclick="triggerOtpRequest('login')">🔒 Request Secure Session OTP</button>
+        <span class="auth-toggle-link" onclick="toggleAuthPanels('signup')">New tour manager? Register Profile here</span>
+    </div>
+
+    <!-- REGC: CENTRAL OTP VERIFYING PANEL LAYER -->
+    <div class="auth-card" id="otpVerificationPanelBlock" style="display: none;">
+        <div class="auth-title">Verify Device Vector</div>
+        <div class="auth-subtitle" id="otpStatusTargetLabel">Enter 4-digit SMS cipher key sent to your cellular address</div>
+        <div class="form-group">
+            <label style="color: var(--accent); font-weight: 800;">4-Digit Text SMS OTP Code</label>
+            <input type="text" id="securityCipherInput" placeholder="• • • •" style="text-align: center; font-size: 1.5rem; letter-spacing: 0.3em; font-weight: 800;" maxlength="4">
+        </div>
+        <button type="button" class="auth-btn" style="background: linear-gradient(135deg, #10b981, #059669);" onclick="processOtpVerification()">🔓 Verify Code & Secure Login</button>
+        <span class="auth-toggle-link" style="color: #64748b;" onclick="resetAuthCycle()">⬅ Cancel and Back</span>
+    </div>
+</div>
+
+<!-- MAIN DASHBOARD CONTENT (LOCKED BEFORE AUTH) -->
+<div class="container">
+    <header>
+        <h1>CHALO UTTARAKHAND TRAVELS</h1>
+        <a href="tel:+919876543210" class="phone-btn-center">📞 Click to Call & Connect with Trip Expert</a>
+        <div class="nav-tabs">
+            <button class="tab-btn active" id="btn-travel" onclick="switchView('travel')">✈ Custom Travel Plan</button>
+            <button class="tab-btn" id="btn-products" onclick="switchView('products')">🛍 Premium Local Products</button>
+        </div>
+    </header>
+    <div class="card">
+        <!-- TRAVEL SECTION LAYER -->
+        <div id="travelSection" class="page-section active">
+            <div class="section-title">Design Your Custom Route</div>
+            <div class="step-block">
+                <div class="form-group">
+                    <label>Estimated Budget Tier</label>
+                    <select id="budgetFilter" onchange="calculateCost();">
+                        <option value="Economic">Economic Framework (Standard Cars + Homestays)</option>
+                        <option value="Mid-Range" selected>Mid-Range Standard (Comfort Sedans + Deluxe Hotels)</option>
+                        <option value="Premium">Premium Luxury Elite (Luxury SUVs + 4-Star Resorts)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Route Category Select</label>
+                    <select id="routeType" onchange="toggleRouteInput(); calculateCost();">
+                        <option value="preset-kedarnath">Kedarnath & Chardham circuit (Approx 800 km)</option>
+                        <option value="preset-rishikesh">Rishikesh & Haridwar weekend (Approx 200 km)</option>
+                        <option value="preset-nainital">Nainital Lake District tour (Approx 350 km)</option>
+                        <option value="preset-joshimath">Joshimath & Auli Snow Package (Approx 600 km)</option>
+                        <option value="custom">★ Create Custom Path (Type from/to yourself) ★</option>
+                    </select>
+                </div>
+                <div class="form-group" id="customRouteBlock" style="display: none;">
+                    <label>Kahan se Kahan Jana Hai aur Kya Ghumna Hai?</label>
+                    <textarea id="customRouteDetails" placeholder="e.g. Dehradun se Chopta Tungnath..." onkeyup="calculateCost()"></textarea>
+                </div>
+            </div>
+
+            <div class="step-block">
+                <div class="form-group">
+                    <label>Kitne Log Hain?</label>
+                    <input type="number" id="passengers" value="1" min="1" max="10" oninput="buildFields(); calculateCost();">
+                </div>
+                <div id="passengerContainer">
+                    <div class="p-row">
+                        <div><label>Passenger 1 Name</label><input type="text" class="p-name" placeholder="Full Name"></div>
+                        <div><label>Phone Number</label><input type="text" class="p-phone" placeholder="Mobile No."></div>
+                    </div>
+                </div>
+                <div class="form-group" style="margin-top: 20px;">
+                    <label>Trip Duration (Total Days)</label>
+                    <input type="number" id="days" value="1" min="1" oninput="calculateCost()">
+                </div>
+                <div class="checkbox-group">
+                    <input type="checkbox" id="insuranceCheck" onchange="calculateCost()">
+                    <label style="cursor: pointer; margin:0; font-size:0.85rem;">Add Secure Hill-Terrain Travel Insurance Frame (₹250 per capita)</label>
+                </div>
+            </div>
+            <div class="live-price" id="priceDisplay">Tour Subtotal: ₹0</div>
+            <button type="button" style="width:100%; background:linear-gradient(135deg, var(--secondary), #047857); color:white; border:none; padding:14px; font-weight:700; border-radius:10px; cursor:pointer; margin-top:15px;" onclick="submitInvoice()">Compile & Save User Invoice</button>
+        </div>
+        <!-- PRODUCTS SECTION -->
+        <div id="productsSection" class="page-section">
+            <div class="section-title">Buy Premium Local Products</div>
+            <div class="step-block">
+                <div class="form-group">
+                    <label>Buyer Full Name</label>
+                    <input type="text" id="prodCustomerName" placeholder="Enter your full name" oninput="calculateCost()">
+                </div>
+                <div class="form-group">
+                    <label>Contact Phone Number</label>
+                    <input type="text" id="prodCustomerPhone" placeholder="Enter mobile number" oninput="calculateCost()">
+                </div>
+                <div class="form-group">
+                    <label>Full Delivery Address</label>
+                    <textarea id="prodCustomerAddress" placeholder="Enter complete shipping address with pincode..." onkeyup="calculateCost()"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Select Organic Mountain Stock</label>
+                    <select id="product" onchange="calculateCost()">
+                        <option value="none" data-price="0">-- Zero Product Allocation --</option>
+                        <option value="Pure Himalayan Honey (1Kg)" data-price="650">Pure Himalayan Honey (1Kg) - ₹650</option>
+                        <option value="Premium Pahadi Dal Mix (1Kg)" data-price="280">Premium Pahadi Dal Mix (1Kg) - ₹280</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Commodity Units (Quantity)</label>
+                    <input type="number" id="prodQty" value="0" min="0" oninput="calculateCost()">
+                </div>
+            </div>
+            <div class="live-price" id="liveProductPrice">Products Subtotal: ₹0</div>
+            <button type="button" style="width:100%; background:linear-gradient(135deg, var(--secondary), #047857); color:white; border:none; padding:14px; font-weight:700; border-radius:10px; cursor:pointer; margin-top:15px;" onclick="submitInvoice()">Compile Products Invoice</button>
+        </div>
+    </div>
+
+    <!-- RIGHT PANEL: SYSTEM LEDGER VIEW -->
+    <div class="card">
+        <div class="section-title">System Document Ledger</div>
+        <p id="ledgerPlaceholder" style="text-align:center; color:#64748b; margin-top:80px;">Fill configurations matrix on left to compile corporate ledger nodes.</p>
+        <div class="invoice-box" id="invoiceBox">
+            <div class="invoice-header"><h3>CHALO UTTARAKHAND SYSTEM RECEIPT</h3></div>
+            <div class="invoice-row"><strong>Vector Type:</strong> <span id="lType">---</span></div>
+            <div class="invoice-row"><strong>Budget Profile:</strong> <span id="lBudget">---</span></div>
+            <div class="invoice-row"><strong>Target Mapping/Route:</strong> <span id="lRoute" style="max-width:65%; text-align:right;">---</span></div>
+            <div class="invoice-row"><strong>Group / Buyer Size:</strong> <span id="lCount">1 Passenger(s)</span></div>
+            <div id="lManifest" class="passenger-list-receipt"></div>
+            <hr style="border:0; border-top:2px dashed #e2e8f0; margin:15px 0;">
+            
+            <div id="travelRows">
+                <div class="invoice-row"><span>Logistics (KM-Based Hill Rate):</span> <span id="lTrans">₹0</span></div>
+                <div class="invoice-row"><span>Accommodation Settlement Cost:</span> <span id="lHotel">₹0</span></div>
+                <div class="invoice-row"><span>Premium Insurance Framework:</span> <span id="lInsurance">₹0</span></div>
+            </div>
+            
+            <div id="productRows" style="display: none;">
+                <div class="invoice-row"><span>Commodity Net Base Price:</span> <span id="lProdBase">₹0</span></div>
+                <div class="invoice-row"><span>Dynamic Trade Tax (18% GST):</span> <span id="lProdGst">₹0</span></div>
+            </div>
+            
+            <div class="invoice-row"><span>Administrative Processing Fee:</span> <span>₹500</span></div>
+            <div class="invoice-total"><span>Total Net Cost:</span> <span id="lTotal">₹0</span></div>
+            <button type="button" class="download-btn" id="dlBtn" onclick="downloadInvoiceText()">📥 Download Bill Document (TXT)</button>
+        </div>
+    </div>
+</div>
+<script>
+    let invoiceData = null; let activeMode = 'travel'; let activeAuthMode = 'signup';
+    
+    // --- SECURE INTERFACE SWITCHERS LOGIC ---
+    function toggleAuthPanels(targetMode) {
+        activeAuthMode = targetMode;
+        document.getElementById("registerPanelBlock").style.display = (targetMode === 'signup') ? "block" : "none";
+        document.getElementById("loginPanelBlock").style.display = (targetMode === 'login') ? "block" : "none";
+        document.getElementById("otpVerificationPanelBlock").style.display = "none";
+    }
+
+    function resetAuthCycle() {
+        toggleAuthPanels(activeAuthMode);
+    }
+
+    function switchView(viewName) {
+        activeMode = viewName;
+        document.getElementById('btn-travel').classList.toggle('active', viewName === 'travel');
+        document.getElementById('btn-products').classList.toggle('active', viewName === 'products');
+        document.getElementById('travelSection').classList.toggle('active', viewName === 'travel');
+        document.getElementById('productsSection').classList.toggle('active', viewName === 'products');
+        document.getElementById("invoiceBox").style.display = "none";
+        document.getElementById("dlBtn").style.display = "none";
+        document.getElementById("ledgerPlaceholder").style.display = "block";
+        calculateCost();
+    }
+    
+    function toggleRouteInput() {
+        const rType = document.getElementById("routeType").value;
+        document.getElementById("customRouteBlock").style.display = (rType === "custom") ? "block" : "none";
+    }
+    
+    function buildFields() {
+        const count = parseInt(document.getElementById("passengers").value) || 1;
+        const container = document.getElementById("passengerContainer");
+        container.innerHTML = "";
+        for (let i = 1; i <= count; i++) {
+            container.innerHTML += `<div class="p-row">
+                <div><label>Passenger ${i} Name</label><input type="text" class="p-name" placeholder="Full Name"></div>
+                <div><label>Phone Number</label><input type="text" class="p-phone" placeholder="Mobile No."></div>
+            </div>`;
+        }
+    }
+    
+    // --- MATHEMATICAL DYNAMIC PRICING AND GST ENGINE ---
+    function calculateCost() {
+        if (activeMode === 'travel') {
+            const budget = document.getElementById("budgetFilter").value;
+            const rType = document.getElementById("routeType").value;
+            const customText = document.getElementById("customRouteDetails").value || "";
+            let logRate = 14, stayRate = 1200, kmDistance = 0, routeLabel = "";
+
+            if(budget === "Economic") { logRate = 11; stayRate = 800; }
+            else if(budget === "Premium") { logRate = 19; stayRate = 2800; }
+
+            if(rType === "preset-kedarnath") { kmDistance = 800; routeLabel = "Char Dham Circuit (800km)"; }
+            else if(rType === "preset-rishikesh") { kmDistance = 200; routeLabel = "Rishikesh Weekend Block (200km)"; }
+            else if(rType === "preset-nainital") { kmDistance = 350; routeLabel = "Nainital Lake District Tour (350km)"; }
+            else if(rType === "preset-joshimath") { kmDistance = 600; routeLabel = "Joshimath High Altitude Route (600km)"; }
+            else { kmDistance = customText.trim() !== "" ? 300 : 0; routeLabel = customText.trim() !== "" ? "Custom Route: " + customText : ""; }
+
+            const pax = parseInt(document.getElementById("passengers").value) || 1;
+            const days = parseInt(document.getElementById("days").value) || 1;
+            let totalT = kmDistance * logRate * Math.ceil(pax / 4);
+            let totalH = stayRate * days * Math.ceil(pax / 2);
+            let totalIns = document.getElementById("insuranceCheck").checked ? (250 * pax) : 0;
+            let grandTotal = routeLabel !== "" ? (totalT + totalH + totalIns + 500) : 0;
+            
+            document.getElementById("priceDisplay").innerText = `Tour Subtotal: ₹${grandTotal}`;
+            let list = []; const names = document.getElementsByClassName("p-name"); const phones = document.getElementsByClassName("p-phone");
+            for(let i=0; i<names.length; i++) {
+                list.push({name: names[i].value || `Passenger ${i+1}`, phone: phones[i].value || "N/A"});
+            }
+            invoiceData = { type: "Custom Corporate Travel Plan", list, budget, route: routeLabel, transport: totalT, hotel: totalH, insurance: totalIns, total: grandTotal };
+        } else {
+            const pSel = document.getElementById("product"); const pOpt = pSel.options[pSel.selectedIndex];
+            const pPrice = parseFloat(pOpt.getAttribute("data-price")) || 0; const q = parseInt(document.getElementById("prodQty").value) || 0;
+            
+            let totalProductsBase = pPrice * q;
+            let gstCalculated = Math.round(totalProductsBase * 0.18);
+            let grandTotal = (totalProductsBase > 0) ? (totalProductsBase + gstCalculated + 500) : 0;
+            
+            document.getElementById("liveProductPrice").innerText = `Products Subtotal: ₹${grandTotal}`;
+            
+            invoiceData = { 
+                type: "Regional Commodity Purchase Order", 
+                name: document.getElementById("prodCustomerName").value || "Retail Client",
+                phone: document.getElementById("prodCustomerPhone").value || "N/A",
+                address: document.getElementById("prodCustomerAddress").value || "No Address Field",
+                route: pOpt.value, 
+                productsBase: totalProductsBase,
+                productsGst: gstCalculated,
+                total: grandTotal 
+            };
+        }
+    }
+
+    // --- FRONTEND AUTHENTICATION TUNNEL LOGIC WIREFRAMES ---
+    function triggerOtpRequest(type) {
+        const phoneInputId = (type === 'signup') ? "regPhone" : "loginPhone";
+        const targetPhone = document.getElementById(phoneInputId).value;
+        
+        if(!targetPhone || targetPhone.trim().length < 10) {
+            alert("Please enter a valid active mobile phone number to route text SMS OTP tokens!");
+            return;
+        }
+
+        // Mock UI panel dynamic transitional update values parameters
+        document.getElementById("registerPanelBlock").style.display = "none";
+        document.getElementById("loginPanelBlock").style.display = "none";
+        document.getElementById("otpVerificationPanelBlock").style.display = "block";
+        document.getElementById("otpStatusTargetLabel").innerText = `Enter 4-digit security cipher sent via text SMS link to: ${targetPhone}`;
+    }
+
+    function processOtpVerification() {
+        const enteredOtp = document.getElementById("securityCipherInput").value;
+        if(!enteredOtp || enteredOtp.trim().length !== 4) {
+            alert("Security Error: Invalid parameter metrics. Please input a complete 4-digit SMS verification code cipher!");
+            return;
+        }
+
+        // Unlock layout persistence layers overlay framework status
+        document.getElementById("authGatewayBlock").style.display = "none";
+        alert("✓ Authentication Gateway Cleared! Secure operational dashboard sessions successfully loaded.");
+    }
+
+    function submitInvoice() {
+        calculateCost();
+        if(!invoiceData || invoiceData.total === 0) { alert("Please input matrix details or select choices first!"); return; }
+        document.getElementById("ledgerPlaceholder").style.display = "none";
+        document.getElementById("invoiceBox").style.display = "block";
+        document.getElementById("dlBtn").style.display = "block";
+        document.getElementById("lType").innerText = invoiceData.type;
+        document.getElementById("lTotal").innerText = `₹${invoiceData.total}`;
+        const manifest = document.getElementById("lManifest"); manifest.innerHTML = "";
+        
+        if (activeMode === 'travel') {
+            document.getElementById("travelRows").style.display = "block"; document.getElementById("productRows").style.display = "none";
+            document.getElementById("lBudget").innerText = invoiceData.budget; document.getElementById("lRoute").innerText = invoiceData.route;
+            document.getElementById("lCount").innerText = `${invoiceData.list.length} Passengers Logged`;
+            document.getElementById("lTrans").innerText = `₹${invoiceData.transport}`; document.getElementById("lHotel").innerText = `₹${invoiceData.hotel}`; document.getElementById("lInsurance").innerText = `₹${invoiceData.insurance}`;
+            invoiceData.list.forEach((p, idx) => { manifest.innerHTML += `<div>👤 P${idx+1}: ${p.name} (Tel: ${p.phone})</div>`; });
+        } else {
+            document.getElementById("travelRows").style.display = "none"; document.getElementById("productRows").style.display = "block";
+            document.getElementById("lBudget").innerText = "N/A"; document.getElementById("lRoute").innerText = invoiceData.route;
+            document.getElementById("lCount").innerText = `1 Product Fulfillment Lead`;
+            document.getElementById("lProdBase").innerText = `₹${invoiceData.productsBase}`;
+            document.getElementById("lProdGst").innerText = `₹${invoiceData.productsGst}`;
+            manifest.innerHTML = `<div><strong>Buyer Identity:</strong> ${invoiceData.name}<br><strong>Contact Phone:</strong> ${invoiceData.phone}<br><strong>Shipping Point:</strong> ${invoiceData.address}</div>`;
+        }
+        fetch('/api/bookings', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(invoiceData) })
+        .then(res => res.json()).then(data => alert("✓ Invoice logged successfully into backend!"))
+        .catch(err => console.error(err));
+    }
+
+    function downloadInvoiceText() {
+        if(!invoiceData) return;
+        let cRows = "", sRows = "";
+        if (invoiceData.type.includes("Travel")) {
+        fetch('/api/bookings', { 
+            method: 'POST', 
+            headers: { 'Content-Type': 'application/json' }, 
+            body: JSON.stringify(invoiceData) 
+        })
+        .then(res => res.json())
+        .then(data => alert("✓ Invoice logged successfully into backend!"))
+        .catch(err => console.error(err));
+    }
+
+    function downloadInvoiceText() {
+        if(!invoiceData) return;
+        let cRows = "", sRows = "";
+        if (invoiceData.type.includes("Travel")) {
+            invoiceData.list.forEach((p, i) => { cRows += `Passenger ${i+1} : ${p.name} (Phone: ${p.phone})\n`; });
+            sRows = `Route Vector : ${invoiceData.route}\nBudget Framework: ${invoiceData.budget}\n------------------------------------\n1. Logistics Cost : INR ${invoiceData.transport}\n2. Accommodation Fee : INR ${invoiceData.hotel}\n3. Travel Insurance : INR ${invoiceData.insurance}\n`;
+        } else {
+            cRows = `Buyer Identity   : ${invoiceData.name}\nContact Phone    : ${invoiceData.phone}\nShipping Address : ${invoiceData.address}\n`; 
+            sRows = `Selected Stock   : ${invoiceData.route}\n------------------------------------\n1. Commodity Value Base : INR ${invoiceData.productsBase}\n2. Trade Tax (18% GST)   : INR ${invoiceData.productsGst}\n`;
+        }
+        let billText = `====================================\n CHALO UTTARAKHAND TRAVELS \n OFFICIAL DIGITAL CLIENT INVOICE\n====================================\n\nOperation Type : ${invoiceData.type}\n------------------------------------\nGroup / Delivery Operational Profiles:\n------------------------------------\n` + cRows + `------------------------------------\nFinancial Breakdown Matrix Metrics:\n------------------------------------\n` + sRows + `4. Fixed Processing Base Charge : INR 500\n------------------------------------\nTOTAL NET SETTLEMENT PAYABLE : INR ${invoiceData.total}\n====================================\n`;
+        let blob = new Blob([billText], { type: "text/plain;charset=utf-8" });
+        let link = document.createElement("a"); link.href = URL.createObjectURL(blob);
+        link.download = `Chalo_UK_Invoice.txt`; document.body.appendChild(link); link.click(); document.body.removeChild(link);
+    }
+
+    window.onload = calculateCost;
+</script>
+</body>
+</html>

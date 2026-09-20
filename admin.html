@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>UK Masterplan - Admin Dashboard</title>
+    <style>
+        :root { --primary: #0f172a; --secondary: #10b981; --white: #ffffff; }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI', sans-serif; }
+        body { background:#f1f5f9; color:var(--primary); padding:30px; }
+        .header { background:var(--primary); color:white; padding:20px; border-radius:12px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; }
+        .btn { background:var(--secondary); color:white; border:none; padding:10px 20px; font-weight:bold; border-radius:8px; cursor:pointer; }
+        table { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,0.05); }
+        th, td { padding:15px; border-bottom:1px solid #e2e8f0; text-align:left; }
+        th { background:#e2e8f0; color:#475569; font-size:0.8rem; text-transform:uppercase; }
+        .del-btn { background:#dc2626; color:white; border:none; padding:6px 12px; border-radius:6px; cursor:pointer; font-size:0.8rem; }
+    </style>
+</head>
+<body>
+<div class="header">
+    <h1>📋 Bookings Ledger</h1>
+    <button class="btn" onclick="loadData()">🔄 Refresh</button>
+</div>
+<table>
+    <thead>
+        <tr><th>ID</th><th>Type</th><th>Budget</th><th>Route</th><th>Passengers</th><th>Total</th><th>Time</th><th>Action</th></tr>
+    </thead>
+    <tbody id="rows"></tbody>
+</table>
+<script>
+    function loadData() {
+        fetch('/api/admin/orders').then(res => res.json()).then(orders => {
+            const tbody = document.getElementById("rows"); tbody.innerHTML = "";
+            orders.reverse().forEach(o => {
+                let pList = "";
+                if(o.list && o.list.length > 0) o.list.forEach(p => pList += `<div>👤 ${p.name} (${p.phone})</div>`);
+                else pList = `<div>${o.name || 'N/A'}</div>`;
+                tbody.innerHTML += `<tr>
+                    <td><b>${o.orderId || 'NEW'}</b></td>
+                    <td>${o.type}</td>
+                    <td>${o.budget || 'N/A'}</td>
+                    <td>${o.route}</td>
+                    <td>${pList}</td>
+                    <td style="color:#10b981; font-weight:bold;">₹${o.total || o.products || 0}</td>
+                    <td>${o.loggedAt || 'Just Now'}</td>
+                    <td><button class="del-btn" onclick="delOrder('${o.orderId}')">🗑 Delete</button></td>
+                </tr>`;
+            });
+        });
+    }
+    function delOrder(id) {
+        if(confirm("Delete this entry permanently?")) {
+            fetch('/api/admin/orders/' + id, { method: 'DELETE' }).then(res => res.json()).then(d => { if(data.success) loadData(); else loadData(); });
+        }
+    }
+    window.onload = loadData;
+</script>
+</body>
+</html>
